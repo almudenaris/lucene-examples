@@ -1,1 +1,6 @@
 txtAnalyzer/target/
+txtAnalyzer/.classpath
+txtAnalyzer/.project
+txtAnalyzer/.settings/org.eclipse.core.resources.prefs
+txtAnalyzer/.settings/org.eclipse.jdt.core.prefs
+txtAnalyzer/.settings/org.eclipse.m2e.core.prefs

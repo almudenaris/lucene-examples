@@ -10,9 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.junit.Test;
 
@@ -74,13 +79,13 @@ public class LuceneCreateIndexTest {
 		// index the file
 		assertNotNull(indexer.createIndex(analyzer, directory, listfiles));
 		//build the query
-		Query query = LuceneSearcher.buildQuery(analyzer, "contents", "receiving");
+		Query query = LuceneSearcher.buildQuery(analyzer, "contents", "nrk");
 		// search over the index
 		LuceneSearcher.search(indexer.getDirectory(), analyzer, query);
 		
 	}
 	
-	@Test
+	@Test //failed test
 	public void testGetMostFrequent() throws IOException{
 		Path directory = Paths.get(FILE_PATH, "index");
 		//build the list of all the files
@@ -94,8 +99,19 @@ public class LuceneCreateIndexTest {
 		
 		for (int i=1; i<numDocs; i++) 
 			LuceneSearcher.readingIndex(directory.toString(), i);
+	
+	}	
+	
+	@Test
+	public void testCalculateTFIDF() throws IOException{
+		Path directory = Paths.get(FILE_PATH, "index");		
+		//build the list of all the files
+		List<File> listfiles = indexer.indexAllFilesInDirectory(Paths.get(FILE_PATH, FILE_NAME));
+		// index the file
+		IndexWriter writer = (indexer.createIndex(analyzer, directory, listfiles));
+		assertNotNull(writer);
+		LuceneSearcher.testCalculateTfIdf(directory, indexer.getDirectory());
 		
 	}
-	
 	
 }

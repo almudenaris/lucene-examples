@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -78,9 +80,16 @@ public class LuceneIndexer {
 					    
 			for(File p: filePath){
 				// read the content of the file
-				FileReader fr = new FileReader(p);
+				FileReader fr = new FileReader(p);				
 				doc = new Document();
-				doc.add(new TextField("contents", fr));
+				// new field to be indexed and stored
+				FieldType type = new FieldType();
+				type.setIndexed(true);	
+//				type.setStored(true);	
+				type.setStoreTermVectors(true);				
+				Field field = new Field("contents", fr, type);
+				doc.add(field);
+//				doc.add(new TextField("contents", fr, Store.YES));
 				doc.add(new StringField("path", p.toString(), Field.Store.YES));
 				doc.add(new StringField("filename", p.getName().toString(), Field.Store.YES));
 

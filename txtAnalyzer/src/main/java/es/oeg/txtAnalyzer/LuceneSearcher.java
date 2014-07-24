@@ -1,12 +1,20 @@
 package es.oeg.txtAnalyzer;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
@@ -92,5 +100,31 @@ public class LuceneSearcher {
 	    reader.close();     
 	}
 
+	// @see http://filotechnologia.blogspot.it/search/label/tf-idf
+	public static void testCalculateTfIdf(Path indexDirectory, Directory directory) throws IOException{
+		TF_IDF tf_idf = new TF_IDF();
+		
+		DirectoryReader ireader = DirectoryReader.open(directory);		
+		/** GET FIELDS **/
+	    Fields fields = MultiFields.getFields(ireader); //Get the Fields of the index
+	    System.out.println("Fields indexados:"+fields.toString());
+	    
+		for (String field: fields){
+			System.out.println("Field actual: "+field);
+			TermsEnum termEnum = MultiFields.getTerms(ireader, field).iterator(null);
+			System.out.println("terms enum: "+ termEnum.toString());
+	          BytesRef bytesRef;
+	          while ((bytesRef = termEnum.next()) != null){
+	              if (termEnum.seekExact(bytesRef)){
+	               String term = bytesRef.utf8ToString();   
+	               System.out.println("Termino: "+term);
+	               tf_idf.scoreCalculator(ireader, field, term);
+	              }
+	          }
+		}
+		
+		assertTrue(true);
+		
+	}
 	
 }

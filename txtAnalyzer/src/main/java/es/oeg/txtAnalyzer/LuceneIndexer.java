@@ -10,17 +10,15 @@ import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 /**
- * 
+ * Sample methods to index a directory
  * @author Almudena Ruiz-Iniesta almudenari@fi.upm.es
  *
  */
@@ -84,12 +82,12 @@ public class LuceneIndexer {
 				doc = new Document();
 				// new field to be indexed and stored
 				FieldType type = new FieldType();
-				type.setIndexed(true);	
+				type.setIndexed(true);
+				// text cannot be stored
 //				type.setStored(true);	
 				type.setStoreTermVectors(true);				
 				Field field = new Field("contents", fr, type);
 				doc.add(field);
-//				doc.add(new TextField("contents", fr, Store.YES));
 				doc.add(new StringField("path", p.toString(), Field.Store.YES));
 				doc.add(new StringField("filename", p.getName().toString(), Field.Store.YES));
 
